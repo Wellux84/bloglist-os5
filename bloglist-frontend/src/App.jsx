@@ -1,20 +1,20 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
+import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [newBlog, setNewBlog] = useState('')
-  const [newTitle, setNewTitle] = useState('')
-  const [newAuthor, setNewAuthor] = useState('')
-  const [newUrl, setNewUrl] = useState('')
+
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
   const [messageType, setMessageType] = useState(null)
+
 
   useEffect(() => {
     if (user) {
@@ -32,56 +32,13 @@ const App = () => {
     }
   }, [])
 
-  const addBlog = (event) => {
-    event.preventDefault()
-    try {
-    const blogObject = {
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl
-    }
-  
-    blogService
-      .create(blogObject)
-        .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
-        setNewTitle('')
-        setNewAuthor('')
-        setNewUrl('')
-      })
-
-    setMessage(`a new blog ${blogObject.title} by ${blogObject.author} added`)
-    setMessageType('success')
-      
-    setTimeout(() => {
-      setMessage(null)
-    }, 5000)
-  } catch (error) {
-    setMessage('Error: failed to add blog')
-    setMessageType('error')
-      
-    setTimeout(() => {
-      setMessage(null)
-    }, 5000)
-
-  }
-}
+ 
 
   const handleBlogChange = (event) => {
     setNewBlog(event.target.value)
   }
 
-  const handleTitleChange = (event) => {
-    setNewTitle(event.target.value)
-  }
 
-  const handleAuthorChange = (event) => {
-    setNewAuthor(event.target.value)
-  }
-
-  const handleUrlChange = (event) => {
-    setNewUrl(event.target.value)
-  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -131,34 +88,7 @@ const App = () => {
     </form>      
   )
 
-  const blogForm = () => (
-    <form onSubmit={addBlog} >
-    <div>
-      Title:
-       <input 
-          value={newTitle}
-          onChange={handleTitleChange}
-       />
-    </div>
-    <div>
-      Author:
-       <input 
-          value={newAuthor}
-          onChange={handleAuthorChange}
-       />
-    </div>
-    <div>
-      Url:
-       <input 
-          value={newUrl}
-          onChange={handleUrlChange}
-       />
-    </div>
-    <div>
-      <button type="submit">Create</button>
-    </div>
-  </form>
-  )
+
 
   return (
   
@@ -170,7 +100,7 @@ const App = () => {
     {!user && loginForm()}
     {user &&  <div>
        <p>{user.name} logged in <button onClick={() => window.localStorage.removeItem('loggedBlogappUser')}>log out</button></p>
-       {blogForm()}
+       <BlogForm blogs={blogs} setBlogs={setBlogs}/>
       </div>
       }
 
