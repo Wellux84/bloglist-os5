@@ -88,7 +88,9 @@ const App = () => {
     </form>      
   )
 
-
+  const updateBlog = (updatedBlog) => {
+    setBlogs(blogs.map(blog => (blog.id === updatedBlog.id ? updatedBlog : blog)))
+  }
 
   return (
   
@@ -107,7 +109,7 @@ const App = () => {
     <div>
       <h2>blogs</h2>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog}/>
       )}
     </div>
   </div>
