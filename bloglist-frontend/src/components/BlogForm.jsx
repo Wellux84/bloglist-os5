@@ -1,106 +1,124 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
-import Notification from '../components/Notification'
+import PropTypes from 'prop-types'
 
-const BlogForm = ({blogs, setBlogs}) => {
 
-    const [newTitle, setNewTitle] = useState('')
-    const [newAuthor, setNewAuthor] = useState('')
-    const [newUrl, setNewUrl] = useState('')
-    const [blogFormVisible, setBlogFormVisible] = useState(false)
-    const [message, setMessage] = useState(null)
-    const [messageType, setMessageType] = useState(null)
+const BlogForm = ({ blogs, setBlogs }) => {
 
-    const handleTitleChange = (event) => {
-      setNewTitle(event.target.value)
-    }
-  
-    const handleAuthorChange = (event) => {
-      setNewAuthor(event.target.value)
-    }
-  
-    const handleUrlChange = (event) => {
-      setNewUrl(event.target.value)
-    }
+  const [newTitle, setNewTitle] = useState('')
+  const [newAuthor, setNewAuthor] = useState('')
+  const [newUrl, setNewUrl] = useState('')
+  const [blogFormVisible, setBlogFormVisible] = useState(false)
+  const [message, setMessage] = useState(null)
+  const [messageType, setMessageType] = useState(null)
 
-    const addBlog = (event) => {
-      blogForm.preventDefault()
-      try {
+  const handleTitleChange = (event) => {
+    setNewTitle(event.target.value)
+  }
+
+  const handleAuthorChange = (event) => {
+    setNewAuthor(event.target.value)
+  }
+
+  const handleUrlChange = (event) => {
+    setNewUrl(event.target.value)
+  }
+
+  const addBlog = (event) => {
+    event.preventDefault()
+    try {
       const blogObject = {
         title: newTitle,
         author: newAuthor,
         url: newUrl
       }
-    
+
       blogService
         .create(blogObject)
-          .then(returnedBlog => {
+        .then(returnedBlog => {
           setBlogs(blogs.concat(returnedBlog))
           setNewTitle('')
           setNewAuthor('')
           setNewUrl('')
           setBlogFormVisible(false)
         })
-  
+
       setMessage(`a new blog ${blogObject.title} by ${blogObject.author} added`)
       setMessageType('success')
-        
+
       setTimeout(() => {
         setMessage(null)
       }, 5000)
     } catch (error) {
-      setMessage('Error: failed to add blog')
+      if (error.response && error.response.data.error) {
+        setMessage(`Error: ${error.response.data.error}`)
+      } else {
+        setMessage('Error: failed to add blog')
+      }
       setMessageType('error')
-        
+
       setTimeout(() => {
         setMessage(null)
       }, 5000)
     }
   }
 
-  
-    const hideWhenVisible = { display: blogFormVisible ? 'none' : '' }
-    const showWhenVisible = { display: blogFormVisible ? '' : 'none' }
-    
-    return (
-      <div>
-        <div style={hideWhenVisible}>
-          <button onClick={() => setBlogFormVisible(true)}>Create New</button>
-        </div>
-        <div style={showWhenVisible}>
-          <form onSubmit={addBlog} >
-        <div>
+
+
+  const hideWhenVisible = { display: blogFormVisible ? 'none' : '' }
+  const showWhenVisible = { display: blogFormVisible ? '' : 'none' }
+
+  return (
+    <div>
+      <div style={hideWhenVisible}>
+        <button onClick={() => setBlogFormVisible(true)}>Create New</button>
+      </div>
+      <div style={showWhenVisible}>
+        {message && (
+          <div className={messageType === 'error' ? 'error' : 'success'}>
+            {message}
+          </div>
+        )}
+        <form onSubmit={addBlog} >
+          <div>
           Title:
-            <input 
+            <input
               value={newTitle}
               onChange={handleTitleChange}
             />
-        </div>
-        <div>
+          </div>
+          <div>
           Author:
-            <input 
+            <input
               value={newAuthor}
               onChange={handleAuthorChange}
-          />
-        </div>
-         <div>
+            />
+          </div>
+          <div>
            Url:
-            <input 
+            <input
               value={newUrl}
               onChange={handleUrlChange}
-          />
-        </div>
-        <div>
-          <button type="submit">Create</button>
-        </div>
-    </form>
-    <button onClick={() => setBlogFormVisible(false)}>cancel</button>
+            />
+          </div>
+          <div>
+            <button type="submit">Create</button>
+          </div>
+        </form>
+        <button onClick={() => setBlogFormVisible(false)}>cancel</button>
+      </div>
     </div>
-    </div>
-    )
-  }
+  )
+}
 
- 
+BlogForm.propTypes = {
+  handleTitleChange: PropTypes.func.isRequired,
+  handleAuthorChange: PropTypes.func.isRequired,
+  handleUrlChange: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+  author: PropTypes.string.isRequired,
+  url: PropTypes.string.isRequired
 
+}
 
-  export default BlogForm
+export default BlogForm

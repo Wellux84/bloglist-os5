@@ -9,7 +9,7 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [newBlog, setNewBlog] = useState('')
 
-  const [username, setUsername] = useState('') 
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
@@ -19,7 +19,7 @@ const App = () => {
   useEffect(() => {
     if (user) {
       blogService.getAll().then(blogs =>
-      setBlogs( blogs ) )
+        setBlogs( blogs ) )
     }
   }, [user])
 
@@ -32,7 +32,6 @@ const App = () => {
     }
   }, [])
 
- 
 
   const handleBlogChange = (event) => {
     setNewBlog(event.target.value)
@@ -42,7 +41,7 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    
+
     try {
       const user = await loginService.login({
         username, password,
@@ -50,7 +49,7 @@ const App = () => {
 
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
-      ) 
+      )
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
@@ -68,7 +67,7 @@ const App = () => {
     <form onSubmit={handleLogin}>
       <div>
         username
-          <input
+        <input
           type="text"
           value={username}
           name="Username"
@@ -77,7 +76,7 @@ const App = () => {
       </div>
       <div>
         password
-          <input
+        <input
           type="password"
           value={password}
           name="Password"
@@ -85,34 +84,41 @@ const App = () => {
         />
       </div>
       <button type="submit">login</button>
-    </form>      
+    </form>
   )
 
   const updateBlog = (updatedBlog) => {
     setBlogs(blogs.map(blog => (blog.id === updatedBlog.id ? updatedBlog : blog)))
   }
 
+  const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
+
+  const deleteBlog = (id) => {
+    setBlogs(blogs.filter(blog => blog.id !== id))
+  }
   return (
-  
     <div>
-    <h1>Blogs</h1>
-    <Notification message={message} type={messageType} />
+      <h1>Blogs</h1>
+      <Notification message={message} type={messageType} />
 
-
-    {!user && loginForm()}
-    {user &&  <div>
-       <p>{user.name} logged in <button onClick={() => window.localStorage.removeItem('loggedBlogappUser')}>log out</button></p>
-       <BlogForm blogs={blogs} setBlogs={setBlogs}/>
+      {!user && loginForm()}
+      {user &&  <div>
+        <p>{user.name} logged in <button onClick={() => window.localStorage.removeItem('loggedBlogappUser')}>log out</button></p>
+        <BlogForm blogs={blogs} setBlogs={setBlogs}/>
       </div>
       }
 
-    <div>
-      <h2>blogs</h2>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={updateBlog}/>
-      )}
+      <div>
+        <h2>Blogs</h2>
+        {sortedBlogs.map(blog => (
+          <Blog key={blog.id} blog={blog} updateBlog={updatedBlog =>
+            setBlogs(blogs.map(b => b.id === updatedBlog.id ? updatedBlog : b))}
+          deleteBlog={deleteBlog}
+          loggedInUser={user}
+          />
+        ))}
+      </div>
     </div>
-  </div>
   )
 }
 
