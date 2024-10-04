@@ -52,9 +52,17 @@ const App = () => {
       )
       blogService.setToken(user.token)
       setUser(user)
+      setMessage('Login successful')
+      setMessageType('success')
+
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
+
       setUsername('')
       setPassword('')
-    } catch (exception) {
+    }
+    catch (error) {
       setMessage('wrong credentials')
       setMessageType('error')
       setTimeout(() => {
@@ -86,10 +94,6 @@ const App = () => {
       <button type="submit">login</button>
     </form>
   )
-
-  const updateBlog = (updatedBlog) => {
-    setBlogs(blogs.map(blog => (blog.id === updatedBlog.id ? updatedBlog : blog)))
-  }
 
   const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
 

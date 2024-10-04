@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
 import PropTypes from 'prop-types'
-
+import Notification from './Notification'
 
 const BlogForm = ({ blogs, setBlogs }) => {
 
@@ -49,12 +49,8 @@ const BlogForm = ({ blogs, setBlogs }) => {
       setTimeout(() => {
         setMessage(null)
       }, 5000)
-    } catch (error) {
-      if (error.response && error.response.data.error) {
-        setMessage(`Error: ${error.response.data.error}`)
-      } else {
-        setMessage('Error: failed to add blog')
-      }
+    } catch (exception) {
+      setMessage('Error: failed to add blog')
       setMessageType('error')
 
       setTimeout(() => {
@@ -64,21 +60,19 @@ const BlogForm = ({ blogs, setBlogs }) => {
   }
 
 
-
   const hideWhenVisible = { display: blogFormVisible ? 'none' : '' }
   const showWhenVisible = { display: blogFormVisible ? '' : 'none' }
 
   return (
     <div>
+      <Notification message={message}
+        className={messageType === 'error' ? 'error' : 'success'}
+      />
       <div style={hideWhenVisible}>
         <button onClick={() => setBlogFormVisible(true)}>Create New</button>
       </div>
       <div style={showWhenVisible}>
-        {message && (
-          <div className={messageType === 'error' ? 'error' : 'success'}>
-            {message}
-          </div>
-        )}
+
         <form onSubmit={addBlog} >
           <div>
           Title:
