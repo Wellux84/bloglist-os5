@@ -65,7 +65,7 @@ const Blog = ({ blog, updateBlog, loggedInUser, deleteBlog }) => {
       {showAll && (
         <div>
           <div>{blog.url}</div>
-          <div>likes {blog.likes} <button onClick={handleLike} >like</button></div>
+          <div data-testid="like-count">likes {blog.likes} <button onClick={handleLike} >like</button></div>
           <div>added by {blog.user.name}</div>
           <div>{loggedInUser?.username === blog.user?.username && (
             <button onClick={handleDelete}>delete</button>
