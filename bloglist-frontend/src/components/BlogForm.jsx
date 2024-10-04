@@ -79,6 +79,7 @@ const BlogForm = ({ blogs, setBlogs }) => {
             <input
               value={newTitle}
               onChange={handleTitleChange}
+              placeholder='Title'
             />
           </div>
           <div>
@@ -86,6 +87,8 @@ const BlogForm = ({ blogs, setBlogs }) => {
             <input
               value={newAuthor}
               onChange={handleAuthorChange}
+              placeholder='Author'
+
             />
           </div>
           <div>
@@ -93,6 +96,8 @@ const BlogForm = ({ blogs, setBlogs }) => {
             <input
               value={newUrl}
               onChange={handleUrlChange}
+              placeholder='Url'
+
             />
           </div>
           <div>
@@ -105,14 +110,6 @@ const BlogForm = ({ blogs, setBlogs }) => {
   )
 }
 
-BlogForm.propTypes = {
-  handleTitleChange: PropTypes.func.isRequired,
-  handleAuthorChange: PropTypes.func.isRequired,
-  handleUrlChange: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
-  author: PropTypes.string.isRequired,
-  url: PropTypes.string.isRequired
 
-}
 
 export default BlogForm
